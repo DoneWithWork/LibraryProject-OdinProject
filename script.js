@@ -18,38 +18,52 @@ newBookBtn.addEventListener("click", () => {
 });
 const tableBody = document.getElementById("table-body");
 function addBookToLibrary(myLibrary) {
-  // do stuff here
-  tableBody.childNodes.forEach((child) => {
-    tableBody.removeChild(child);
-  });
+  // Clear the table body before adding new rows
+  while (tableBody.firstChild) {
+    tableBody.removeChild(tableBody.firstChild);
+  }
+
+  // Add each book as a row in the table
   myLibrary.forEach((book, index) => {
     const row = document.createElement("tr");
 
-    //remove btn
-    const removeBtn = document.createElement("button");
-    removeBtn.setAttribute("data-index", index);
-    removeBtn.textContent = "Remove";
-    removeBtn.addEventListener("click", (e) => {
-      DeleteBook(e.target.getAttribute("data-index"));
-    });
+    // Create and append cells for each book property
+    const titleCell = document.createElement("td");
+    titleCell.textContent = book.title;
+    row.appendChild(titleCell);
 
-    //read btn
+    const authorCell = document.createElement("td");
+    authorCell.textContent = book.author;
+    row.appendChild(authorCell);
+
+    const pagesCell = document.createElement("td");
+    pagesCell.textContent = book.pages;
+    row.appendChild(pagesCell);
+
+    const readCell = document.createElement("td");
+    readCell.textContent = book.read ? "Read" : "Not Read";
+    row.appendChild(readCell);
+
+    // Remove button
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "Remove";
+    removeBtn.addEventListener("click", () => {
+      DeleteBook(index);
+    });
+    const removeCell = document.createElement("td");
+    removeCell.appendChild(removeBtn);
+    row.appendChild(removeCell);
+
+    // Toggle read status button
     const readBtn = document.createElement("button");
-    readBtn.setAttribute("data-index", index);
-    readBtn.textContent = book.read ? "Read" : "Not Read";
-    readBtn.addEventListener("click", (e) => {
-      ToggleBookReadStatus(e.target.getAttribute("data-index"));
+    readBtn.textContent = book.read ? "Mark as Unread" : "Mark as Read";
+    readBtn.addEventListener("click", () => {
+      ToggleBookReadStatus(index);
     });
-    Object.values(book).forEach((value) => {
-      if (typeof value !== "function") {
-        // Ignore the 'info' function
-        const cell = document.createElement("td");
-        cell.textContent = value;
-        row.appendChild(cell);
-      }
-    });
-    row.appendChild(removeBtn);
-    row.appendChild(readBtn);
+    const readBtnCell = document.createElement("td");
+    readBtnCell.appendChild(readBtn);
+    row.appendChild(readBtnCell);
+
     tableBody.appendChild(row);
   });
 }
